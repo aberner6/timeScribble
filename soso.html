@@ -52,7 +52,8 @@ var maxResponse = d3.max(data, function(d,i) {
 
 var widthMap = d3.scale.linear()
 	.domain([0, maxResponse]) //max feasibility
-	.range([margin, width-margin]);
+	.range([margin, width+width/4]);
+
 var bigWidthMap = d3.scale.linear()
 	.domain([0, maxResponse]) //max feasibility
 	.range([200, width-200]);
@@ -162,7 +163,7 @@ setTimeout(function(){
 			 		return i * 200; 
 			 	})
 .ease([.1,1])	
-			 .attr("opacity", ".05")
+			 .attr("opacity", ".1")
 			 .attr("fill", function(d,i){
     			for (var s = 0; s<how.length; s++){
     					if (d.engaged===how[s]){
@@ -173,7 +174,7 @@ setTimeout(function(){
 			 .attr("rx", height/8)
 			 .attr("ry", 0)
 			 .attr("cx", function(d,i){
-			 	return bigWidthMap(i)
+			 	return widthMap(i)
 			 })
 			 .attr("cy", 0)
 			 .transition()
@@ -182,7 +183,7 @@ setTimeout(function(){
 			 		return i * 200; 
 			 	})
 .ease([.1,1])	
-			 .attr("rx", height/8)
+			 .attr("rx", 100)
 			 .attr("ry", height)
 			 .attr("cy", height/2)
 
@@ -195,7 +196,7 @@ setTimeout(function(){
 // }	
 $(function(){
     $('#textwriter').teletype({
-        animDelay: 300,
+        animDelay: 100,
         text: '\n into it'
     });
 });
@@ -203,12 +204,26 @@ $(function(){
 			 .data(data)
 			 .enter()
 			 .append("ellipse")
+			 .attr("opacity", ".1")
+			 .attr("cx", function(d,i){
+			 	return widthMap(i)
+			 })	
+			 .attr("cy", height/2)
+			 .attr("rx", height/8)
+			 .attr("ry", height)
+			 .attr("fill", function(d,i){
+    			for (var s = 0; s<how.length; s++){
+    					if (d.engaged===how[s]){
+        				return groupColors[s];
+    					}
+    			}
+			 })
 			 .transition()
 			 .duration(1000)
 			 .delay(function(d,i) { 
 			 		return i * 200; 
 			 	})
-.ease([.1,1])			 
+.ease([.1,1])
 			 .attr("cy", function(d,i) {
 				if (d.engaged==="into it"){
 				return height/3;
@@ -222,7 +237,7 @@ $(function(){
 				return height/3;
 				}
 				else{
-					return height/8;
+					return 20;
 				}
 				})
 			 .attr("ry", function(d,i){
@@ -233,7 +248,7 @@ $(function(){
 					return height;
 				}
 				})
-}, 26000);
+}, 29000);
 
 // $.fn.unteletype = function(opts){
 //     var $this = this,
