@@ -53,6 +53,9 @@ var maxResponse = d3.max(data, function(d,i) {
 var widthMap = d3.scale.linear()
 	.domain([0, maxResponse]) //max feasibility
 	.range([margin, width-margin]);
+var bigWidthMap = d3.scale.linear()
+	.domain([0, maxResponse]) //max feasibility
+	.range([200, width-200]);
 
 function zoom() {
 	circ.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
@@ -300,10 +303,10 @@ setTimeout(function(){
 			 })
 
 			 .transition()
-			 .delay(80000) //not 81000
+			 .delay(70000) //not 81000
 			 .duration(3000)
 			 .ease([.1,1])
-			 .attr("opacity", ".1")
+			 // .attr("opacity", ".1")
 			 .attr("rx", function(d,i){
 				if (d.engaged==="into it"){
 				return width/maxResponse*3;
@@ -331,7 +334,7 @@ setTimeout(function(){
 			 })
 
 			 .transition()
-			 .delay(100000) //not 14
+			 .delay(90000) //not 14
 			 .duration(3000)
 			 .ease([.1,1])
 			 // .attr("opacity", ".03")
@@ -362,27 +365,18 @@ setTimeout(function(){
 				// return height/3;
 				} 			 	
 			 })
-			 .attr("cy", function(d,i) {
-				if (d.engaged==="into it"){
-					return height/2;
-				// return height;
-				}
-				if (d.engaged==="soso"){
-				return height/2;
-				//return height/2;
-				} 
-				if (d.engaged==="out of it"){
-					return height/2;
-				// return height/3;
-				} 
-			 })
+			 .attr("cy", height/2)
+
 			 .transition()
-			 .delay(160000) //not 14
+			 .delay(150000) //not 14
 			 .duration(3000)
 			 .ease([.1,1])
 			 // .attr("opacity", ".03")
-			 .attr("rx", height/2)
-			 .attr("ry", height/2)
+			 .attr("rx", height/8)
+			 .attr("ry", height)
+			 .attr("cx", function(d,i){
+			 	return bigWidthMap(i)
+			 })
 			 .attr("cy", height/2)
 }, 3000);
 
