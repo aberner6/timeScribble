@@ -35,7 +35,7 @@ $(function(){
 //it could be a circle not a line?
 //begin with a transition and delay and let each person out one by one
 
-var width = 3000,
+var width = 5000,
 		height = 1300;
 var margin = 100;
 
@@ -54,7 +54,7 @@ var widthMap = d3.scale.linear()
 	.domain([0, maxResponse]) //max feasibility
 	.range([margin, width+width/4]);
 
-var bigWidthMap = d3.scale.linear()
+var bigMap = d3.scale.linear()
 	.domain([0, maxResponse]) //max feasibility
 	.range([margin, width]);
 
@@ -174,7 +174,7 @@ setTimeout(function(){
 			 .attr("rx", height/8)
 			 .attr("ry", 0)
 			 .attr("cx", function(d,i){
-			 	return bigWidthMap(i)
+			 	return bigMap(i)
 			 })
 			 .attr("cy", 0)
 			 .transition()
@@ -203,7 +203,7 @@ $(function(){
 			 .append("ellipse")
 			 .attr("opacity", ".1")
 			 .attr("cx", function(d,i){
-			 	return bigWidthMap(i)
+			 	return bigMap(i)
 			 })	
 			 .attr("cy", height/2)
 			 .attr("rx", height/8)
@@ -225,26 +225,26 @@ $(function(){
 				if (d.engaged==="into it"){
 				return height/3;
 				}
-				else{
-					return 10;
-				}
+				// else{
+				// 	return 10;
+				// }
 				})
 			 .attr("cy", function(d,i) {
 				if (d.engaged==="into it"){
 				return height/3;
 				}
-				else {
-					return height/2;
-				}
+				// else {
+				// 	return height/2;
+				// }
 			 })
 			 .attr("ry", function(d,i){
 				if (d.engaged==="into it"){
 				return height/3;
 				}
-				else{
-					// console.log(d.engaged)
-					return height;
-				}
+				// else{
+				// 	// console.log(d.engaged)
+				// 	return height;
+				// }
 				})
 }, 29000);
 
@@ -261,7 +261,7 @@ $(function(){
 			 .append("ellipse")
 			 .attr("opacity", ".1")
 			 .attr("cx", function(d,i){
-			 	return bigWidthMap(i)
+			 	return bigMap(i)
 			 })	
 			 .attr("cy", height/2)
 			 .attr("rx", height/8)
@@ -286,9 +286,9 @@ $(function(){
 				if (d.engaged==="soso"){
 				return height/4;
 				}
-				else{
-					return 10;
-				}
+				// else{
+				// 	return 10;
+				// }
 				})
 			 .attr("cy", function(d,i) {
 				if (d.engaged==="into it"){
@@ -297,9 +297,9 @@ $(function(){
 				if (d.engaged==="soso"){
 				return height/2;
 				}
-				else {
-					return height/2;
-				}
+				// else {
+				// 	return height/2;
+				// }
 			 })
 			 .attr("ry", function(d,i){
 				if (d.engaged==="into it"){
@@ -308,12 +308,12 @@ $(function(){
 				if (d.engaged==="soso"){
 				return height/4;
 				}
-				else{
-					// console.log(d.engaged)
-					return height;
-				}
+				// else{
+				// 	// console.log(d.engaged)
+				// 	return height;
+				// }
 				})
-}, 40000);
+}, 60000);
 
 setTimeout(function(){
 $(function(){
@@ -328,7 +328,7 @@ $(function(){
 			 .append("ellipse")
 			 .attr("opacity", ".1")
 			 .attr("cx", function(d,i){
-			 	return bigWidthMap(i)
+			 	return bigMap(i)
 			 })	
 			 .attr("cy", height/2)
 			 .attr("rx", height/8)
