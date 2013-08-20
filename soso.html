@@ -43,7 +43,7 @@ var groupColors = ["red","teal","yellow"]
 var how = ["out of it","into it","soso"]
 
 d3.json("ideo.json", function(data, error) {
-	console.log(data)
+	// console.log(data)
 	console.log(data.length)
 
 var maxResponse = d3.max(data, function(d,i) { 
@@ -56,7 +56,7 @@ var widthMap = d3.scale.linear()
 
 var bigWidthMap = d3.scale.linear()
 	.domain([0, maxResponse]) //max feasibility
-	.range([200, width-200]);
+	.range([margin, width-margin]);
 
 function zoom() {
 	circ.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
@@ -174,7 +174,7 @@ setTimeout(function(){
 			 .attr("rx", height/8)
 			 .attr("ry", 0)
 			 .attr("cx", function(d,i){
-			 	return widthMap(i)
+			 	return bigWidthMap(i)
 			 })
 			 .attr("cy", 0)
 			 .transition()
@@ -191,9 +191,6 @@ setTimeout(function(){
 
 
 setTimeout(function(){
-// $(function(){
-
-// }	
 $(function(){
     $('#textwriter').teletype({
         animDelay: 100,
@@ -206,7 +203,7 @@ $(function(){
 			 .append("ellipse")
 			 .attr("opacity", ".1")
 			 .attr("cx", function(d,i){
-			 	return widthMap(i)
+			 	return bigWidthMap(i)
 			 })	
 			 .attr("cy", height/2)
 			 .attr("rx", height/8)
@@ -224,6 +221,14 @@ $(function(){
 			 		return i * 200; 
 			 	})
 .ease([.1,1])
+			 .attr("rx", function(d,i){
+				if (d.engaged==="into it"){
+				return height/3;
+				}
+				else{
+					return 10;
+				}
+				})
 			 .attr("cy", function(d,i) {
 				if (d.engaged==="into it"){
 				return height/3;
@@ -232,23 +237,95 @@ $(function(){
 					return height/2;
 				}
 			 })
-			 .attr("rx", function(d,i){
-				if (d.engaged==="into it"){
-				return height/3;
-				}
-				else{
-					return 20;
-				}
-				})
 			 .attr("ry", function(d,i){
 				if (d.engaged==="into it"){
 				return height/3;
 				}
 				else{
+					// console.log(d.engaged)
 					return height;
 				}
 				})
 }, 29000);
+
+setTimeout(function(){
+// $(function(){
+
+// }	
+$(function(){
+    $('#textwriter').teletype({
+        animDelay: 100,
+        text: '  so so'
+    });
+});
+		circ.selectAll("g")
+			 .data(data)
+			 .enter()
+			 .append("ellipse")
+			 .attr("opacity", ".1")
+			 .attr("cx", function(d,i){
+			 	return bigWidthMap(i)
+			 })	
+			 .attr("cy", height/2)
+			 .attr("rx", height/8)
+			 .attr("ry", height)
+			 .attr("fill", function(d,i){
+    			for (var s = 0; s<how.length; s++){
+    					if (d.engaged===how[s]){
+        				return groupColors[s];
+    					}
+    			}
+			 })
+			 .transition()
+			 .duration(1000)
+			 .delay(function(d,i) { 
+			 		return i * 200; 
+			 	})
+.ease([.1,1])
+			 .attr("rx", function(d,i){
+				if (d.engaged==="into it"){
+				return height/3;
+				}
+				if (d.engaged==="soso"){
+				return height/4;
+				}
+				else{
+					return 10;
+				}
+				})
+			 .attr("cy", function(d,i) {
+				if (d.engaged==="into it"){
+				return height/3;
+				}
+				if (d.engaged==="soso"){
+				return height/2;
+				}
+				else {
+					return height/2;
+				}
+			 })
+			 .attr("ry", function(d,i){
+				if (d.engaged==="into it"){
+				return height/3;
+				}
+				if (d.engaged==="soso"){
+				return height/4;
+				}
+				else{
+					// console.log(d.engaged)
+					return height;
+				}
+				})
+}, 34000);
+
+
+
+
+
+
+
+
+
 
 // $.fn.unteletype = function(opts){
 //     var $this = this,
