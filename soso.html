@@ -1,12 +1,43 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<body>
-
+<head>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script type="text/javascript" src="http://d3js.org/d3.v2.min.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
 
+<style type="text/css">
+
+/*html, body, #map {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.stations, .stations svg {
+  position: absolute;
+}
+
+.stations svg {
+  width: 60px;
+  height: 20px;
+  padding-right: 100px;
+  font: 10px sans-serif;
+}
+
+.stations circle {
+  fill: brown;
+  stroke: black;
+  stroke-width: 1.5px;
+}*/
+
+</style>
+</head>
+<body>
 <div id="inspiration"></div>
 <div id="textwriter" style="font-family:Brain Flower; font-size: 48px"></div>
+<div id="map"></div>
+
 <!-- <script type="text/javascript" src="/js/inspiration.js"></script>
  -->
 
@@ -78,78 +109,18 @@ var svg = d3.select("body").append("svg")
 $.fn.unteletype = function(opts){
     var $this = this,
         defaults = {
-            animDelay: 50
+            animDelay: 200
         },
         settings = $.extend(defaults, opts);
     
     $.each(settings.text.split(''), function(i, letter){
         setTimeout(function(){
+        		if (i>1){
             $this.html($this.html() - letter);
+          	}
         }, settings.animDelay * i);
     });
 };
-// var circ = svg.append("g");
-// 		circ.selectAll("circle")
-// 			 .data(data)
-// 			 .enter()
-// 			 .append("circle")
-// 			 .attr("cy", -10)
-// 			 .attr("cx", -10)
-// 			 .attr("r", 0);
-
-// setTimeout(function(){
-// 		circ.selectAll("g")
-// 			 .data(data)
-// 			 .enter()
-// 			 .append("circle")
-// 			 .transition()
-// 			 .duration(4000)
-// 			 .delay(function(d,i) { 
-// 			 		return i * 200; 
-// 			 	})
-// .ease([.1,1])			 
-// 			 .attr("cy", function(d,i) {
-// 				if (d.engaged==="into it"){
-// 				return height/3;
-// 				}
-// 				if (d.engaged==="soso"){
-// 				return height/2;
-// 				} 
-// 				if (d.engaged==="out of it"){
-// 				return height*2/3;
-// 				} 
-// 			 })
-// 			 .attr("cx", function(d,i) {
-// 				return widthMap(i);
-// 							 // return projection([d.lon, d.lat])[1];
-// 			 })
-// 			 .attr("r", 50)
-// 			 .attr("fill", function(d,i){
-//     			for (var s = 0; s<how.length; s++){
-//     					if (d.engaged===how[s]){
-//         				return groupColors[s];
-//     					}
-//     			}
-// 			 })
-// 			 .attr("stroke-width","0")
-// 			 .attr("stroke","white")
-// 			 .attr("opacity", ".1")
-
-// 			 .transition()
-// 			 .delay(20000)
-// 			 .duration(4000)
-// 			 // .delay(function(d,i) { 
-// 			 // 		return i * 800; 
-// 			 // 	})
-// 			 .ease([.1,1])			 
-// 			 .attr("cy",height)
-// 			 .attr("stroke-width","10")
-// 			 .attr("stroke","white")
-// 			 .attr("r",600)
-// 			 // .attr("opacity", ".03");
-// }, 1000);
-
-
 
 makeCircs()
 var circ = svg.selectAll("ellipse")
@@ -356,10 +327,10 @@ setTimeout(function(){
 $(function(){
     $('#textwriter').unteletype({
         animDelay: 50,
-        // text: 'out of it--'
+        text: 'out of it'
     });
     $('#textwriter').teletype({
-        animDelay: 50,
+        animDelay: 400,
         text: 'We are Doin'
     });
 });
@@ -387,229 +358,65 @@ $(function(){
 
 			 .attr("rx", 100)
 			 .attr("ry", height)
-			 .attr("cy", height/2)
-
+			 .attr("cy", height/2);
+mapIt();
 }, 97000);
 
+function mapIt(){
+	var map = new google.maps.Map(d3.select("#map").node(), {
+  zoom: 8,
+  center: new google.maps.LatLng(37.76487, -122.41948),
+  mapTypeId: google.maps.MapTypeId.TERRAIN
+});
+
+  var overlay = new google.maps.OverlayView();
+
+  // Add the container when the overlay is added to the map.
+  overlay.onAdd = function() {
+    var layer = d3.select(this.getPanes().overlayLayer).append("div")
+        .attr("class", "stations");
+
+    // Draw each marker as a separate SVG element.
+    // We could use a single SVG, but what size would it have?
+    overlay.draw = function() {
+      var projection = this.getProjection(),
+          padding = 10;
+
+      var marker = layer.selectAll("svg")
+          .data(data)
+          .each(transform) // update existing markers
+        .enter().append("svg:svg")
+          .each(transform)
+          .attr("class", "marker");
+
+      // Add a circle.
+      marker.append("svg:circle")
+          .attr("r", 4.5)
+          .attr("cx", padding)
+          .attr("cy", padding);
+
+      // Add a label.
+      // marker.append("svg:text")
+      //     .attr("x", padding + 7)
+      //     .attr("y", padding)
+      //     .attr("dy", ".31em")
+      //     .text(function(d) { return d.key; });
+
+      function transform(d) {
+        d = new google.maps.LatLng(d.lon, d.lat);
+        d = projection.fromLatLngToDivPixel(d);
+        return d3.select(this)
+            .style("left", (d.x - padding) + "px")
+            .style("top", (d.y - padding) + "px");
+      }
+    };
+  };
+
+  // Bind our overlay to the map…
+  overlay.setMap(map);
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//THIS WORKS WELL
-// var circ = svg.append("g");
-// 		circ.selectAll("ellipse")
-// 			 .data(data)
-// 			 .enter()
-// 			 .append("ellipse")
-// 			 .attr("cy", -10)
-// 			 .attr("cx", -10)
-// 			 .attr("rx", 0)
-// 			 .attr("ry", 0);
-
-// setTimeout(function(){
-// 		circ.selectAll("g")
-// 			 .data(data)
-// 			 .enter()
-// 			 .append("ellipse")
-// 			 .transition()
-// 			 .duration(1000)
-// 			 .delay(function(d,i) { 
-// 			 		return i * 200; 
-// 			 	})
-// .ease([.1,1])			 
-// 			 .attr("cy", function(d,i) {
-// 				if (d.engaged==="into it"){
-// 				return height/3;
-// 				}
-// 				if (d.engaged==="soso"){
-// 				return height/2;
-// 				} 
-// 				if (d.engaged==="out of it"){
-// 				return height*2/3;
-// 				} 
-// 			 })
-// 			 .attr("cx", function(d,i) {
-// 				return widthMap(i);
-// 							 // return projection([d.lon, d.lat])[1];
-// 			 })
-// 			 .attr("rx", 50)
-// 			 .attr("ry", 50)
-// 			 .attr("fill", function(d,i){
-//     			for (var s = 0; s<how.length; s++){
-//     					if (d.engaged===how[s]){
-//         				return groupColors[s];
-//     					}
-//     			}
-// 			 })
-// 			 .attr("stroke-width","0")
-// 			 .attr("stroke","white")
-// 			 .attr("opacity", ".1")
-
-// 			 .transition()
-// 			 //NOT QUITE ENOUGH DELAY
-// 			 .delay(25000)
-// 			 .duration(4000)
-// 			 .ease([.1,1])			 
-// 			 .attr("cy",height)
-// 			 // .attr("stroke-width","10")
-// 			 // .attr("stroke","white")
-// 			 .attr("rx", 300)
-// 			 .attr("ry", 300)			 	
-
-// 			 .transition()
-// 			 .delay(40000)
-// 			 .duration(4000)
-// 			 .ease([.1,1])			 
-// 			 .attr("cy",height)
-// 			 	.attr("opacity", ".05")
-// 			 .attr("stroke-width","0")
-// 			 .attr("stroke","white")
-// 			 .attr("rx", function(d,i){
-// 				if (d.engaged==="into it"){
-// 				return height*2/3;
-// 				}
-// 				if (d.engaged==="soso"){
-// 				return height/3;
-// 				} 
-// 				if (d.engaged==="out of it"){
-// 				return height/4;
-// 				} 			 	
-// 			 })
-// 			 .attr("ry", function(d,i){
-// 				if (d.engaged==="into it"){
-// 					return height*2/3;
-// 				// return height*2/3;
-// 				}
-// 				if (d.engaged==="soso"){
-// 					return height/3;
-// 				// return height/2;
-// 				} 
-// 				if (d.engaged==="out of it"){
-// 					return height/4;
-// 				// return height/3;
-// 				} 			 	
-// 			 })
-
-// 			 .transition()
-// 			 .delay(70000) //not 81000
-// 			 .duration(3000)
-// 			 .ease([.1,1])
-// 			 // .attr("opacity", ".1")
-// 			 .attr("rx", function(d,i){
-// 				if (d.engaged==="into it"){
-// 				return width/maxResponse*3;
-// 				}
-// 				if (d.engaged==="soso"){
-// 				return width/maxResponse*2;
-// 				} 
-// 				if (d.engaged==="out of it"){
-// 				return height/4;
-// 				} 			 	
-// 			 })
-// 			 .attr("cy", function(d,i) {
-// 				if (d.engaged==="into it"){
-// 					return height/3;
-// 				// return height;
-// 				}
-// 				if (d.engaged==="soso"){
-// 				return height*3/4;
-// 				//return height/2;
-// 				} 
-// 				if (d.engaged==="out of it"){
-// 					return height;
-// 				// return height/3;
-// 				} 
-// 			 })
-
-// 			 .transition()
-// 			 .delay(90000) //not 14
-// 			 .duration(3000)
-// 			 .ease([.1,1])
-// 			 // .attr("opacity", ".03")
-// 			 .attr("rx", function(d,i){
-// 				if (d.engaged==="into it"){
-// 					return height*2/3;
-// 				// return width/maxResponse;
-// 				}
-// 				if (d.engaged==="soso"){
-// 					return height/8;
-// 				} 
-// 				if (d.engaged==="out of it"){
-// 					return height/16;
-// 				// return width/maxResponse;
-// 				} 			 	
-// 			 })
-// 			 .attr("ry", function(d,i){
-// 				if (d.engaged==="into it"){
-// 					return height*2/3;
-// 				// return height*2/3;
-// 				}
-// 				if (d.engaged==="soso"){
-// 					return height/8;
-// 				// return height/2;
-// 				} 
-// 				if (d.engaged==="out of it"){
-// 					return height/16;
-// 				// return height/3;
-// 				} 			 	
-// 			 })
-// 			 .attr("cy", height/2)
-
-// 			 .transition()
-// 			 .delay(1500) //not 14
-// 			 .duration(3000)
-// 			 .ease([.1,1])
-// 			 // .attr("opacity", ".03")
-// 			 .attr("rx", height/8)
-// 			 .attr("ry", height)
-// 			 .attr("cx", function(d,i){
-// 			 	return bigWidthMap(i)
-// 			 })
-// 			 .attr("cy", height/2)
-// }, 3000);
-//THIS WORKS WELL
 
 
 
