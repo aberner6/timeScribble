@@ -75,7 +75,19 @@ var svg = d3.select("body").append("svg")
 			.append("g");
 
 
-
+$.fn.unteletype = function(opts){
+    var $this = this,
+        defaults = {
+            animDelay: 50
+        },
+        settings = $.extend(defaults, opts);
+    
+    $.each(settings.text.split(''), function(i, letter){
+        setTimeout(function(){
+            $this.html($this.html() - letter);
+        }, settings.animDelay * i);
+    });
+};
 // var circ = svg.append("g");
 // 		circ.selectAll("circle")
 // 			 .data(data)
@@ -160,8 +172,8 @@ var circ = svg.append("g");
     					}
     			}
 			 })
-			 .attr("stroke-width","0")
-			 .attr("stroke", "white")
+			 // .attr("stroke-width","0")
+			 // .attr("stroke", "white")
 }
 //first transition for overall view
 setTimeout(function(){
@@ -198,7 +210,7 @@ setTimeout(function(){
 $(function(){
     $('#textwriter').teletype({
         animDelay: 50,
-        text: '\n into it'
+        text: '\n --into it'
     });
 });
 		circ
@@ -209,8 +221,8 @@ $(function(){
 			 	})
 			 .ease([.1,1])
 
-			 .attr("stroke-width","1")
-			 .attr("stroke", "gray")
+			 // .attr("stroke-width","1")
+			 // .attr("stroke", "gray")
 			 .attr("rx", function(d,i){
 				if (d.engaged==="into it"){
 				return height/3;
@@ -286,14 +298,14 @@ $(function(){
 				return height/2;
 				}
 			 })
-}, 55000);
+}, 52000);
 
 //transition for OUT OF IT
 setTimeout(function(){	
 $(function(){
     $('#textwriter').teletype({
         animDelay: 50,
-        text: 'out of it'
+        text: 'out of it--'
     });
 });
 		circ
@@ -337,23 +349,34 @@ $(function(){
 				return height*4/5;
 				}
 			 })
-},80000);
+},75000);
 
+//OVERALL VIEW
 setTimeout(function(){
+$(function(){
+    $('#textwriter').unteletype({
+        animDelay: 50,
+        // text: 'out of it--'
+    });
+    $('#textwriter').teletype({
+        animDelay: 50,
+        text: 'We are Doin'
+    });
+});
 		circ
-			 .transition()
-			 .duration(1000)
-			 .delay(function(d,i) { 
-			 		return i * 200; 
-			 	})
-			 .ease([.1,1])	
+			 // .transition()
+			 // .duration(1000)
+			 // .delay(function(d,i) { 
+			 // 		return i * 200; 
+			 // 	})
+			 // .ease([.1,1])	
 
-			 .attr("rx", height/8)
-			 .attr("ry", 0)
-			 .attr("cx", function(d,i){
-			 	return bigMap(i)
-			 })
-			 .attr("cy", 0)
+			 // .attr("rx", height/8)
+			 // .attr("ry", 0)
+			 // .attr("cx", function(d,i){
+			 // 	return bigMap(i)
+			 // })
+			 // .attr("cy", 0)
 //keep this?
 			 .transition()
 			 .duration(8000)
@@ -366,7 +389,7 @@ setTimeout(function(){
 			 .attr("ry", height)
 			 .attr("cy", height/2)
 
-}, 100000);
+}, 97000);
 
 
 
@@ -399,25 +422,8 @@ setTimeout(function(){
 
 
 
-// $.fn.unteletype = function(opts){
-//     var $this = this,
-//         defaults = {
-//             animDelay: 50
-//         },
-//         settings = $.extend(defaults, opts);
-    
-//     $.each(settings.text.split(''), function(i, letter){
-//         setTimeout(function(){
-//             $this.html($this.html() - letter);
-//         }, settings.animDelay * i);
-//     });
-// };
-//  $(function(){
-//      $('#container').unteletype({
-//         animDelay: 6000,
-//         text: 'Now is the time...'
-//     });
-// });
+
+
 
 
 
