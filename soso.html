@@ -56,7 +56,7 @@ var widthMap = d3.scale.linear()
 
 var bigWidthMap = d3.scale.linear()
 	.domain([0, maxResponse]) //max feasibility
-	.range([margin, width-margin]);
+	.range([margin, width]);
 
 function zoom() {
 	circ.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
@@ -248,14 +248,11 @@ $(function(){
 				})
 }, 29000);
 
-setTimeout(function(){
-// $(function(){
-
-// }	
+setTimeout(function(){	
 $(function(){
     $('#textwriter').teletype({
-        animDelay: 100,
-        text: '  so so'
+        animDelay: 300,
+        text: '      so so'
     });
 });
 		circ.selectAll("g")
@@ -316,8 +313,73 @@ $(function(){
 					return height;
 				}
 				})
-}, 34000);
+}, 40000);
 
+setTimeout(function(){
+$(function(){
+    $('#textwriter').teletype({
+        animDelay: 600,
+        text: '      out of it'
+    });
+});
+		circ.selectAll("g")
+			 .data(data)
+			 .enter()
+			 .append("ellipse")
+			 .attr("opacity", ".1")
+			 .attr("cx", function(d,i){
+			 	return bigWidthMap(i)
+			 })	
+			 .attr("cy", height/2)
+			 .attr("rx", height/8)
+			 .attr("ry", height)
+			 .attr("fill", function(d,i){
+    			for (var s = 0; s<how.length; s++){
+    					if (d.engaged===how[s]){
+        				return groupColors[s];
+    					}
+    			}
+			 })
+			 .transition()
+			 .duration(1000)
+			 .delay(function(d,i) { 
+			 		return i * 200; 
+			 	})
+.ease([.1,1])
+			 .attr("rx", function(d,i){
+				if (d.engaged==="into it"){
+				return height/3;
+				}
+				if (d.engaged==="soso"){
+				return height/4;
+				}
+				if (d.engaged==="out of it"){
+					return height/5;
+				}
+				})
+			 .attr("cy", function(d,i) {
+				if (d.engaged==="into it"){
+				return height/3;
+				}
+				if (d.engaged==="soso"){
+				return height/2;
+				}
+				if (d.engaged==="out of it"){
+					return height*2/3;
+				}
+			 })
+			 .attr("ry", function(d,i){
+				if (d.engaged==="into it"){
+				return height/3;
+				}
+				if (d.engaged==="soso"){
+				return height/4;
+				}
+				if (d.engaged==="out of it"){
+					return height/5;
+				}
+				})
+}, 80000);
 
 
 
