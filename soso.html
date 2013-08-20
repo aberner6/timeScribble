@@ -139,8 +139,10 @@ var svg = d3.select("body").append("svg")
 
 
 
+makeCircs()
+var circ = svg.selectAll("ellipse")
 
-
+function makeCircs(){
 var circ = svg.append("g");
 		circ.selectAll("ellipse")
 			 .data(data)
@@ -148,22 +150,9 @@ var circ = svg.append("g");
 			 .append("ellipse")
 			 .attr("cy", -10)
 			 .attr("cx", -10)
-			 .attr("rx", 0)
-			 .attr("ry", 0)
-			 .attr("opacity", ".03");
-
-setTimeout(function(){
-		circ.selectAll("g")
-			 .data(data)
-			 .enter()
-			 .append("ellipse")
-			 .transition()
-			 .duration(1000)
-			 .delay(function(d,i) { 
-			 		return i * 200; 
-			 	})
-.ease([.1,1])	
-			 .attr("opacity", ".1")
+			 .attr("rx", 5)
+			 .attr("ry", 5)
+			 .attr("opacity", ".2") //or .1?
 			 .attr("fill", function(d,i){
     			for (var s = 0; s<how.length; s++){
     					if (d.engaged===how[s]){
@@ -171,25 +160,40 @@ setTimeout(function(){
     					}
     			}
 			 })
+			 .attr("stroke-width","0")
+			 .attr("stroke", "white")
+}
+//first transition for overall view
+setTimeout(function(){
+		circ
+			 .transition()
+			 .duration(1000)
+			 .delay(function(d,i) { 
+			 		return i * 200; 
+			 	})
+			 .ease([.1,1])	
+
 			 .attr("rx", height/8)
 			 .attr("ry", 0)
 			 .attr("cx", function(d,i){
 			 	return bigMap(i)
 			 })
 			 .attr("cy", 0)
+//keep this?
 			 .transition()
 			 .duration(8000)
 			 .delay(function(d,i) { 
 			 		return i * 200; 
 			 	})
-.ease([.1,1])	
+			 .ease([.1,1])	
+
 			 .attr("rx", 100)
 			 .attr("ry", height)
 			 .attr("cy", height/2)
 
 }, 4000);
 
-
+//second transition for INTO IT
 setTimeout(function(){
 $(function(){
     $('#textwriter').teletype({
@@ -197,88 +201,58 @@ $(function(){
         text: '\n into it'
     });
 });
-		circ.selectAll("g")
-			 .data(data)
-			 .enter()
-			 .append("ellipse")
-			 .attr("opacity", ".1")
-			 .attr("cx", function(d,i){
-			 	return bigMap(i)
-			 })	
-			 .attr("cy", height/2)
-			 .attr("rx", height/8)
-			 .attr("ry", height)
-			 .attr("fill", function(d,i){
-    			for (var s = 0; s<how.length; s++){
-    					if (d.engaged===how[s]){
-        				return groupColors[s];
-    					}
-    			}
-			 })
+		circ
 			 .transition()
 			 .duration(1000)
 			 .delay(function(d,i) { 
 			 		return i * 200; 
 			 	})
-.ease([.1,1])
+			 .ease([.1,1])
+
+			 .attr("stroke-width","1")
+			 .attr("stroke", "gray")
 			 .attr("rx", function(d,i){
 				if (d.engaged==="into it"){
 				return height/3;
 				}
-				// else{
-				// 	return 10;
-				// }
+				else {
+					return 10;
+				}
 				})
 			 .attr("cy", function(d,i) {
 				if (d.engaged==="into it"){
 				return height/3;
 				}
-				// else {
-				// 	return height/2;
-				// }
+				else {
+					return height/2;
+				}
 			 })
 			 .attr("ry", function(d,i){
 				if (d.engaged==="into it"){
 				return height/3;
 				}
-				// else{
-				// 	// console.log(d.engaged)
-				// 	return height;
-				// }
+				else {
+					return height;
+				}
 				})
 }, 29000);
 
+//transition for SOSO
 setTimeout(function(){	
 $(function(){
     $('#textwriter').teletype({
         animDelay: 50,
-        text: '      so so'
+        text: '--so so--'
     });
 });
-		circ.selectAll("g")
-			 .data(data)
-			 .enter()
-			 .append("ellipse")
-			 .attr("opacity", ".1")
-			 .attr("cx", function(d,i){
-			 	return bigMap(i)
-			 })	
-			 .attr("cy", height/2)
-			 .attr("rx", height/8)
-			 .attr("ry", height)
-			 .attr("fill", function(d,i){
-    			for (var s = 0; s<how.length; s++){
-    					if (d.engaged===how[s]){
-        				return groupColors[s];
-    					}
-    			}
-			 })
+		circ
 			 .transition()
 			 .duration(1000)
 			 .delay(function(d,i) { 
 			 		return i * 200; 
 			 	})
-.ease([.1,1])
+			 .ease([.1,1])
+
 			 .attr("rx", function(d,i){
 				if (d.engaged==="into it"){
 				return height/3;
@@ -286,21 +260,10 @@ $(function(){
 				if (d.engaged==="soso"){
 				return height/4;
 				}
-				// else{
-				// 	return 10;
-				// }
+				else {
+					return 10;
+				}
 				})
-			 .attr("cy", function(d,i) {
-				if (d.engaged==="into it"){
-				return height/3;
-				}
-				if (d.engaged==="soso"){
-				return height/2;
-				}
-				// else {
-				// 	return height/2;
-				// }
-			 })
 			 .attr("ry", function(d,i){
 				if (d.engaged==="into it"){
 				return height/3;
@@ -308,44 +271,39 @@ $(function(){
 				if (d.engaged==="soso"){
 				return height/4;
 				}
-				// else{
-				// 	// console.log(d.engaged)
-				// 	return height;
-				// }
+				else {
+				return height;
+				}
 				})
-}, 60000);
+			 .attr("cy", function(d,i) {
+				if (d.engaged==="into it"){
+				return height/3;
+				}
+				if (d.engaged==="soso"){
+				return height*2/3;
+				}
+				else {
+				return height/2;
+				}
+			 })
+}, 55000);
 
-setTimeout(function(){
+//transition for OUT OF IT
+setTimeout(function(){	
 $(function(){
     $('#textwriter').teletype({
         animDelay: 50,
-        text: '      out of it'
+        text: 'out of it'
     });
 });
-		circ.selectAll("g")
-			 .data(data)
-			 .enter()
-			 .append("ellipse")
-			 .attr("opacity", ".1")
-			 .attr("cx", function(d,i){
-			 	return bigMap(i)
-			 })	
-			 .attr("cy", height/2)
-			 .attr("rx", height/8)
-			 .attr("ry", height)
-			 .attr("fill", function(d,i){
-    			for (var s = 0; s<how.length; s++){
-    					if (d.engaged===how[s]){
-        				return groupColors[s];
-    					}
-    			}
-			 })
+		circ
 			 .transition()
 			 .duration(1000)
 			 .delay(function(d,i) { 
 			 		return i * 200; 
 			 	})
-.ease([.1,1])
+			 .ease([.1,1])
+
 			 .attr("rx", function(d,i){
 				if (d.engaged==="into it"){
 				return height/3;
@@ -353,21 +311,10 @@ $(function(){
 				if (d.engaged==="soso"){
 				return height/4;
 				}
-				if (d.engaged==="out of it"){
+				else {
 					return height/5;
 				}
 				})
-			 .attr("cy", function(d,i) {
-				if (d.engaged==="into it"){
-				return height/3;
-				}
-				if (d.engaged==="soso"){
-				return height/2;
-				}
-				if (d.engaged==="out of it"){
-					return height*2/3;
-				}
-			 })
 			 .attr("ry", function(d,i){
 				if (d.engaged==="into it"){
 				return height/3;
@@ -375,11 +322,74 @@ $(function(){
 				if (d.engaged==="soso"){
 				return height/4;
 				}
-				if (d.engaged==="out of it"){
-					return height/5;
+				else {
+				return height/5;
 				}
 				})
-}, 80000);
+			 .attr("cy", function(d,i) {
+				if (d.engaged==="into it"){
+				return height/3;
+				}
+				if (d.engaged==="soso"){
+				return height*2/3;
+				}
+				else {
+				return height*4/5;
+				}
+			 })
+},80000);
+
+setTimeout(function(){
+		circ
+			 .transition()
+			 .duration(1000)
+			 .delay(function(d,i) { 
+			 		return i * 200; 
+			 	})
+			 .ease([.1,1])	
+
+			 .attr("rx", height/8)
+			 .attr("ry", 0)
+			 .attr("cx", function(d,i){
+			 	return bigMap(i)
+			 })
+			 .attr("cy", 0)
+//keep this?
+			 .transition()
+			 .duration(8000)
+			 .delay(function(d,i) { 
+			 		return i * 200; 
+			 	})
+			 .ease([.1,1])	
+
+			 .attr("rx", 100)
+			 .attr("ry", height)
+			 .attr("cy", height/2)
+
+}, 100000);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
