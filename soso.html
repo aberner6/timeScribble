@@ -20,7 +20,7 @@ $.fn.teletype = function(opts){
     
     $.each(settings.text, function(i, letter){
         setTimeout(function(){
-            $this.html($this.html() + letter);
+            $this.html($this.html() + (letter != '\n' ? letter : '<br />'));
         }, settings.animDelay * i);
     });
 };
@@ -72,71 +72,6 @@ var svg = d3.select("body").append("svg")
 			.append("g")
 			.call(d3.behavior.zoom().scaleExtent([1, 8]).on("zoom", zoom))
 			.append("g");
-
-
-
-// var circ = svg.append("g");
-// 		circ.selectAll("circle")
-// 			 .data(data)
-// 			 .enter()
-// 			 .append("circle")
-// 			 .attr("cy", -10)
-// 			 .attr("cx", -10)
-// 			 .attr("r", 0)
-// 			 .transition()
-// 			 .duration(4000)
-// 			 .delay(function(d,i) { 
-// 			 		return i * 200; 
-// 			 	})
-// .ease([.1,1])			 
-// 			 .attr("cy", function(d,i) {
-// 				if (d.engaged==="into it"){
-// 				return height/3;
-// 				}
-// 				if (d.engaged==="soso"){
-// 				return height/2;
-// 				} 
-// 				if (d.engaged==="out of it"){
-// 				return height*2/3;
-// 				} 
-// 			 })
-// 			 .attr("cx", function(d,i) {
-// 				return widthMap(i);
-// 							 // return projection([d.lon, d.lat])[1];
-// 			 })
-// 			 .attr("r", 50)
-// 			 .attr("fill", function(d,i){
-//     			for (var s = 0; s<how.length; s++){
-//     					if (d.engaged===how[s]){
-//         				return groupColors[s];
-//     					}
-//     			}
-// 			 })
-// 			 .attr("stroke-width","0")
-// 			 .attr("stroke","white")
-// 			 .attr("opacity", ".1")
-// 			 .transition.each([end,],4000)
-// 			 .duration(4000)
-// 			 .delay(function(d,i) { 
-// 			 		return i * 200; 
-// 			 	})
-// .ease([.1,1])
-// 			 .attr("cy",height)
-// 			 .attr("r", 200)
-// 			 .transition()
-// 			 .duration(9000)
-// 			 .delay(function(d,i) { 
-// 			 		return i * 400; 
-// 			 })
-// .ease([.1,1])
-// 			 .attr("stroke-width","10")
-// 			 .attr("stroke","white")
-// 			 .attr("opacity", ".05")
-// 			 // .attr("cy",height)
-// 			 .attr("r",600)
-// 			 .attr("opacity", ".03")
- 
-
 
 
 
@@ -205,9 +140,6 @@ var svg = d3.select("body").append("svg")
 
 
 
-
-
-
 var circ = svg.append("g");
 		circ.selectAll("ellipse")
 			 .data(data)
@@ -216,9 +148,57 @@ var circ = svg.append("g");
 			 .attr("cy", -10)
 			 .attr("cx", -10)
 			 .attr("rx", 0)
-			 .attr("ry", 0);
+			 .attr("ry", 0)
+			 .attr("opacity", ".03");
 
 setTimeout(function(){
+		circ.selectAll("g")
+			 .data(data)
+			 .enter()
+			 .append("ellipse")
+			 .transition()
+			 .duration(1000)
+			 .delay(function(d,i) { 
+			 		return i * 200; 
+			 	})
+.ease([.1,1])	
+			 .attr("opacity", ".05")
+			 .attr("fill", function(d,i){
+    			for (var s = 0; s<how.length; s++){
+    					if (d.engaged===how[s]){
+        				return groupColors[s];
+    					}
+    			}
+			 })
+			 .attr("rx", height/8)
+			 .attr("ry", 0)
+			 .attr("cx", function(d,i){
+			 	return bigWidthMap(i)
+			 })
+			 .attr("cy", 0)
+			 .transition()
+			 .duration(8000)
+			 .delay(function(d,i) { 
+			 		return i * 200; 
+			 	})
+.ease([.1,1])	
+			 .attr("rx", height/8)
+			 .attr("ry", height)
+			 .attr("cy", height/2)
+
+}, 4000);
+
+
+setTimeout(function(){
+// $(function(){
+
+// }	
+$(function(){
+    $('#textwriter').teletype({
+        animDelay: 300,
+        text: '\n into it'
+    });
+});
 		circ.selectAll("g")
 			 .data(data)
 			 .enter()
@@ -233,152 +213,47 @@ setTimeout(function(){
 				if (d.engaged==="into it"){
 				return height/3;
 				}
-				if (d.engaged==="soso"){
-				return height/2;
-				} 
-				if (d.engaged==="out of it"){
-				return height*2/3;
-				} 
+				else {
+					return height/2;
+				}
 			 })
-			 .attr("cx", function(d,i) {
-				return widthMap(i);
-							 // return projection([d.lon, d.lat])[1];
-			 })
-			 .attr("rx", 50)
-			 .attr("ry", 50)
-			 .attr("fill", function(d,i){
-    			for (var s = 0; s<how.length; s++){
-    					if (d.engaged===how[s]){
-        				return groupColors[s];
-    					}
-    			}
-			 })
-			 .attr("stroke-width","0")
-			 .attr("stroke","white")
-			 .attr("opacity", ".1")
-
-			 .transition()
-			 //NOT QUITE ENOUGH DELAY
-			 .delay(25000)
-			 .duration(4000)
-			 .ease([.1,1])			 
-			 .attr("cy",height)
-			 // .attr("stroke-width","10")
-			 // .attr("stroke","white")
-			 .attr("rx", 300)
-			 .attr("ry", 300)			 	
-
-			 .transition()
-			 .delay(40000)
-			 .duration(4000)
-			 .ease([.1,1])			 
-			 .attr("cy",height)
-			 	.attr("opacity", ".05")
-			 .attr("stroke-width","0")
-			 .attr("stroke","white")
 			 .attr("rx", function(d,i){
 				if (d.engaged==="into it"){
-				return height*2/3;
-				}
-				if (d.engaged==="soso"){
 				return height/3;
-				} 
-				if (d.engaged==="out of it"){
-				return height/4;
-				} 			 	
-			 })
+				}
+				else{
+					return height/8;
+				}
+				})
 			 .attr("ry", function(d,i){
 				if (d.engaged==="into it"){
-					return height*2/3;
-				// return height*2/3;
+				return height/3;
 				}
-				if (d.engaged==="soso"){
-					return height/3;
-				// return height/2;
-				} 
-				if (d.engaged==="out of it"){
-					return height/4;
-				// return height/3;
-				} 			 	
-			 })
-
-			 .transition()
-			 .delay(70000) //not 81000
-			 .duration(3000)
-			 .ease([.1,1])
-			 // .attr("opacity", ".1")
-			 .attr("rx", function(d,i){
-				if (d.engaged==="into it"){
-				return width/maxResponse*3;
-				}
-				if (d.engaged==="soso"){
-				return width/maxResponse*2;
-				} 
-				if (d.engaged==="out of it"){
-				return height/4;
-				} 			 	
-			 })
-			 .attr("cy", function(d,i) {
-				if (d.engaged==="into it"){
-					return height/3;
-				// return height;
-				}
-				if (d.engaged==="soso"){
-				return height*3/4;
-				//return height/2;
-				} 
-				if (d.engaged==="out of it"){
+				else{
 					return height;
-				// return height/3;
-				} 
-			 })
-
-			 .transition()
-			 .delay(90000) //not 14
-			 .duration(3000)
-			 .ease([.1,1])
-			 // .attr("opacity", ".03")
-			 .attr("rx", function(d,i){
-				if (d.engaged==="into it"){
-					return height*2/3;
-				// return width/maxResponse;
 				}
-				if (d.engaged==="soso"){
-					return height/8;
-				} 
-				if (d.engaged==="out of it"){
-					return height/16;
-				// return width/maxResponse;
-				} 			 	
-			 })
-			 .attr("ry", function(d,i){
-				if (d.engaged==="into it"){
-					return height*2/3;
-				// return height*2/3;
-				}
-				if (d.engaged==="soso"){
-					return height/8;
-				// return height/2;
-				} 
-				if (d.engaged==="out of it"){
-					return height/16;
-				// return height/3;
-				} 			 	
-			 })
-			 .attr("cy", height/2)
+				})
+}, 26000);
 
-			 .transition()
-			 .delay(150000) //not 14
-			 .duration(3000)
-			 .ease([.1,1])
-			 // .attr("opacity", ".03")
-			 .attr("rx", height/8)
-			 .attr("ry", height)
-			 .attr("cx", function(d,i){
-			 	return bigWidthMap(i)
-			 })
-			 .attr("cy", height/2)
-}, 3000);
+// $.fn.unteletype = function(opts){
+//     var $this = this,
+//         defaults = {
+//             animDelay: 50
+//         },
+//         settings = $.extend(defaults, opts);
+    
+//     $.each(settings.text.split(''), function(i, letter){
+//         setTimeout(function(){
+//             $this.html($this.html() - letter);
+//         }, settings.animDelay * i);
+//     });
+// };
+//  $(function(){
+//      $('#container').unteletype({
+//         animDelay: 6000,
+//         text: 'Now is the time...'
+//     });
+// });
 
 
 
@@ -392,104 +267,199 @@ setTimeout(function(){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//THIS WORKS WELL
 // var circ = svg.append("g");
-// 		circ.selectAll("circle")
+// 		circ.selectAll("ellipse")
 // 			 .data(data)
 // 			 .enter()
-// 			 .append("circle")
+// 			 .append("ellipse")
 // 			 .attr("cy", -10)
 // 			 .attr("cx", -10)
-// 			 .attr("r", 0);
+// 			 .attr("rx", 0)
+// 			 .attr("ry", 0);
 
-// var transition = d3.transition()
-//     .duration(8000)
-// 		.ease([.1,1]);		
-
-// transition.each(function(){
-// 	d3.selectAll('circle').transition()
-// 	.attr("cy", function(d,i) {
-// 		if (d.engaged==="into it"){
-// 			return height/3;
-// 		}
-// 		if (d.engaged==="soso"){
-// 			return height/2;
-// 		} 
-// 		if (d.engaged==="out of it"){
-// 			return height*2/3;
-// 		} 
-// 	})
-// 	.attr("cx", function(d,i) {
-// 		return widthMap(i);
-// 							 // return projection([d.lon, d.lat])[1];
-// 	})
-// 	.attr("r", 50)
-// 	.attr("fill", function(d,i){
-//     for (var s = 0; s<how.length; s++){
-//     	if (d.engaged===how[s]){
-//         return groupColors[s];
-//     	}
-//    	}
-// 	})
-// 	.attr("stroke-width","0")
-// 	.attr("stroke","white")
-// 	.attr("opacity", ".1")
-// 	.remove();		
-// })
-// transition.transition().each(function() {
-//   d3.selectAll("circle").transition()
-// 			 .attr("stroke-width","10")
-// 			 .attr("stroke","white")
-// 			 // .attr("cy",height)
-// 			 .attr("r",600)
-// 			 .attr("opacity", ".03")
-// 			 .remove();
-// });
+// setTimeout(function(){
+// 		circ.selectAll("g")
+// 			 .data(data)
+// 			 .enter()
+// 			 .append("ellipse")
 // 			 .transition()
 // 			 .duration(1000)
 // 			 .delay(function(d,i) { 
 // 			 		return i * 200; 
 // 			 	})
 // .ease([.1,1])			 
+// 			 .attr("cy", function(d,i) {
+// 				if (d.engaged==="into it"){
+// 				return height/3;
+// 				}
+// 				if (d.engaged==="soso"){
+// 				return height/2;
+// 				} 
+// 				if (d.engaged==="out of it"){
+// 				return height*2/3;
+// 				} 
+// 			 })
+// 			 .attr("cx", function(d,i) {
+// 				return widthMap(i);
+// 							 // return projection([d.lon, d.lat])[1];
+// 			 })
+// 			 .attr("rx", 50)
+// 			 .attr("ry", 50)
+// 			 .attr("fill", function(d,i){
+//     			for (var s = 0; s<how.length; s++){
+//     					if (d.engaged===how[s]){
+//         				return groupColors[s];
+//     					}
+//     			}
+// 			 })
+// 			 .attr("stroke-width","0")
+// 			 .attr("stroke","white")
+// 			 .attr("opacity", ".1")
 
 // 			 .transition()
+// 			 //NOT QUITE ENOUGH DELAY
+// 			 .delay(25000)
 // 			 .duration(4000)
-// 			 .delay(function(d,i) { 
-// 			 		return i * 200; 
-// 			 	})
-// .ease([.1,1])
+// 			 .ease([.1,1])			 
 // 			 .attr("cy",height)
-// 			 .attr("r", 200)
+// 			 // .attr("stroke-width","10")
+// 			 // .attr("stroke","white")
+// 			 .attr("rx", 300)
+// 			 .attr("ry", 300)			 	
+
 // 			 .transition()
-// 			 .duration(9000)
-// 			 .delay(function(d,i) { 
-// 			 		return i * 400; 
-// 			 })
-// .ease([.1,1])
-// 			 .attr("stroke-width","10")
+// 			 .delay(40000)
+// 			 .duration(4000)
+// 			 .ease([.1,1])			 
+// 			 .attr("cy",height)
+// 			 	.attr("opacity", ".05")
+// 			 .attr("stroke-width","0")
 // 			 .attr("stroke","white")
-// 			 .attr("opacity", .05)
-// 			 // .attr("cy",height)
-// 			 .attr("r",600)
-// 			 .attr("opacity", .03)
+// 			 .attr("rx", function(d,i){
+// 				if (d.engaged==="into it"){
+// 				return height*2/3;
+// 				}
+// 				if (d.engaged==="soso"){
+// 				return height/3;
+// 				} 
+// 				if (d.engaged==="out of it"){
+// 				return height/4;
+// 				} 			 	
+// 			 })
+// 			 .attr("ry", function(d,i){
+// 				if (d.engaged==="into it"){
+// 					return height*2/3;
+// 				// return height*2/3;
+// 				}
+// 				if (d.engaged==="soso"){
+// 					return height/3;
+// 				// return height/2;
+// 				} 
+// 				if (d.engaged==="out of it"){
+// 					return height/4;
+// 				// return height/3;
+// 				} 			 	
+// 			 })
+
+// 			 .transition()
+// 			 .delay(70000) //not 81000
+// 			 .duration(3000)
+// 			 .ease([.1,1])
+// 			 // .attr("opacity", ".1")
+// 			 .attr("rx", function(d,i){
+// 				if (d.engaged==="into it"){
+// 				return width/maxResponse*3;
+// 				}
+// 				if (d.engaged==="soso"){
+// 				return width/maxResponse*2;
+// 				} 
+// 				if (d.engaged==="out of it"){
+// 				return height/4;
+// 				} 			 	
+// 			 })
+// 			 .attr("cy", function(d,i) {
+// 				if (d.engaged==="into it"){
+// 					return height/3;
+// 				// return height;
+// 				}
+// 				if (d.engaged==="soso"){
+// 				return height*3/4;
+// 				//return height/2;
+// 				} 
+// 				if (d.engaged==="out of it"){
+// 					return height;
+// 				// return height/3;
+// 				} 
+// 			 })
+
+// 			 .transition()
+// 			 .delay(90000) //not 14
+// 			 .duration(3000)
+// 			 .ease([.1,1])
+// 			 // .attr("opacity", ".03")
+// 			 .attr("rx", function(d,i){
+// 				if (d.engaged==="into it"){
+// 					return height*2/3;
+// 				// return width/maxResponse;
+// 				}
+// 				if (d.engaged==="soso"){
+// 					return height/8;
+// 				} 
+// 				if (d.engaged==="out of it"){
+// 					return height/16;
+// 				// return width/maxResponse;
+// 				} 			 	
+// 			 })
+// 			 .attr("ry", function(d,i){
+// 				if (d.engaged==="into it"){
+// 					return height*2/3;
+// 				// return height*2/3;
+// 				}
+// 				if (d.engaged==="soso"){
+// 					return height/8;
+// 				// return height/2;
+// 				} 
+// 				if (d.engaged==="out of it"){
+// 					return height/16;
+// 				// return height/3;
+// 				} 			 	
+// 			 })
+// 			 .attr("cy", height/2)
+
+// 			 .transition()
+// 			 .delay(1500) //not 14
+// 			 .duration(3000)
+// 			 .ease([.1,1])
+// 			 // .attr("opacity", ".03")
+// 			 .attr("rx", height/8)
+// 			 .attr("ry", height)
+// 			 .attr("cx", function(d,i){
+// 			 	return bigWidthMap(i)
+// 			 })
+// 			 .attr("cy", height/2)
+// }, 3000);
+//THIS WORKS WELL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
